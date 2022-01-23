@@ -1,5 +1,5 @@
 ﻿using System;
-
+using ImageConverter;
 namespace KMeans
 {
     /// <summary>
@@ -119,11 +119,13 @@ namespace KMeans
         public int X { get; private set; }
         public int Y { get; private set; }
 
-        public PixelData(int x, int y, double hue, double saturation):base(new double[] { hue, saturation})
-        {
-            X = x;
-            Y = y;
-        }
+        double val = 0;
+
+        //public PixelData(int x, int y, double hue, double saturation):base(new double[] { hue, saturation})
+        //{
+        //    X = x;
+        //    Y = y;
+        //}
 
 
         public PixelData(int x, int y, double r, double g, double b) : base(new double[] { r, g, b })
@@ -139,10 +141,10 @@ namespace KMeans
             Components[2] = b;
         }
 
-        public void SetHueSat(double hue, double sat)
-        {
-            Components[0] = hue;
-            Components[1] = sat;
-        }
+        //public void SetHueSat(double hue, double sat)
+        //{
+        //    Components[0] = hue;
+        //    Components[1] = sat;
+        //}
     }
 }
