@@ -7,9 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-// This is the code for your desktop app.
-// Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
+using KMeans;
 
 namespace ImageConverter
 {
@@ -38,20 +36,38 @@ namespace ImageConverter
                     
             }
         }
-
+        
         public static void ChangeColor(ref Bitmap scrBitmap)
         {
-
+            List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
             for (int i = 0; i < scrBitmap.Width; i++)
             {
                 for (int j = 0; j < scrBitmap.Height; j++)
                 {
                     Color c = scrBitmap.GetPixel(i, j);
-                    Color2Hsv(c, out double h, out double s, out double v);
-                    scrBitmap.SetPixel(i, j, Hsv2Color((float)h, (float)s, (float)v));
+                    //Color2Hsv(c, out double h, out double s, out double v);
+                    pixels.Add(new PixelData(i, j, c.R, c.G, c.B));
+                    //scrBitmap.SetPixel(i, j, Hsv2Color((float)h, (float)s, (float)v));
 
                 }
 
+            }
+
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
+            Cluster[] clusters = cl.Compute();
+            for(int i = 0; i < clusters.Length;++i)
+            {
+                Cluster c = clusters[i];
+                for(int j = 0; j < c.Points.Count; ++j)
+                {
+                    ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
+                }
+
+            }
+
+            foreach(var pix in pixels)
+            {
+                scrBitmap.SetPixel(pix.X, pix.Y, Color.FromArgb((int)pix.Components[0], (int)pix.Components[1], (int)pix.Components[2]));
             }
         }
 
