@@ -47,11 +47,11 @@ namespace ImageConverter
                 for (int j = 0; j < scrBitmap.Height; j++)
                 {
                     //scrBitmap.SetPixel(i, j, Color.Azure);
-                    Color c = scrBitmap.GetPixel(i, j);
-                    float h = c.GetHue();
-                    float s = c.GetSaturation();
-                    float v = c.GetBrightness();
-                    scrBitmap.SetPixel(i, j, HSV2RGB(h, s, v));
+                    //Color c = scrBitmap.GetPixel(i, j);
+                    //float h = c.GetHue();
+                    //float s = c.GetSaturation();
+                    //float v = c.GetBrightness();
+                    //scrBitmap.SetPixel(i, j, HSV2RGB(h, s, v));
                     
                 }
 
