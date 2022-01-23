@@ -46,7 +46,7 @@ namespace ImageConverter
                 {
                     Color c = scrBitmap.GetPixel(i, j);
                     //Color2Hsv(c, out double h, out double s, out double v);
-                    pixels.Add(new PixelData(i, j, c.R, c.G, c.B));
+                    pixels.Add(new PixelData(i, j, (double)c.R/255d, (double)c.G/255d, (double)c.B/255d));
                     //scrBitmap.SetPixel(i, j, Hsv2Color((float)h, (float)s, (float)v));
 
                 }
@@ -67,7 +67,8 @@ namespace ImageConverter
 
             foreach(var pix in pixels)
             {
-                scrBitmap.SetPixel(pix.X, pix.Y, Color.FromArgb((int)pix.Components[0], (int)pix.Components[1], (int)pix.Components[2]));
+                scrBitmap.SetPixel(pix.X, pix.Y, Color.FromArgb((int)(pix.Components[0]*255d), (int)(pix.Components[1]*255d), 
+                    (int)(pix.Components[2]*255d)));
             }
         }
 
