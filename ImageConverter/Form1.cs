@@ -32,8 +32,7 @@ namespace ImageConverter
                 m_Image = Image.FromFile(s);
                 Bitmap b = (Bitmap)m_Image;
                 ChangeColor(ref b);
-                pictureBox.Image = m_Image;
-                    
+                pictureBox.Image = m_Image;                 
             }
         }
         
@@ -45,31 +44,31 @@ namespace ImageConverter
                 for (int j = 0; j < scrBitmap.Height; j++)
                 {
                     Color c = scrBitmap.GetPixel(i, j);
-                    //Color2Hsv(c, out double h, out double s, out double v);
-                    pixels.Add(new PixelData(i, j, (double)c.R/255d, (double)c.G/255d, (double)c.B/255d));
-                    //scrBitmap.SetPixel(i, j, Hsv2Color((float)h, (float)s, (float)v));
+                    Color2Hsv(c, out double h, out double s, out double v);
 
+                    scrBitmap.SetPixel(i, j, Hsv2Color((float)h, (float)s, (float)v));
+                    //pixels.Add(new PixelData(i, j, (double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
                 }
 
             }
 
-            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
-            Cluster[] clusters = cl.Compute();
-            for(int i = 0; i < clusters.Length;++i)
-            {
-                Cluster c = clusters[i];
-                for(int j = 0; j < c.Points.Count; ++j)
-                {
-                    ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
-                }
+            //KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
+            //Cluster[] clusters = cl.Compute();
+            //for(int i = 0; i < clusters.Length;++i)
+            //{
+            //    Cluster c = clusters[i];
+            //    for(int j = 0; j < c.Points.Count; ++j)
+            //    {
+            //        ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
+            //    }
 
-            }
+            //}
 
-            foreach(var pix in pixels)
-            {
-                scrBitmap.SetPixel(pix.X, pix.Y, Color.FromArgb((int)(pix.Components[0]*255d), (int)(pix.Components[1]*255d), 
-                    (int)(pix.Components[2]*255d)));
-            }
+            //foreach(var pix in pixels)
+            //{
+            //    scrBitmap.SetPixel(pix.X, pix.Y, Color.FromArgb((int)(pix.Components[0]*255d), (int)(pix.Components[1]*255d), 
+            //        (int)(pix.Components[2]*255d)));
+            //}
         }
 
 
@@ -81,18 +80,10 @@ namespace ImageConverter
             return Color.FromArgb(r, g, b);
         }
 
-        public static void Color2Hsv(Color color, out double hue, out double saturation, out double value)
+        public static void Color2Hsv(Color color, out double h, out double s, out double v)
         {
-            int max = Math.Max(color.R, Math.Max(color.G, color.B));
-            int min = Math.Min(color.R, Math.Min(color.G, color.B));
-
-            hue = color.GetHue();
-            saturation = (max == 0) ? 0 : 1d - (1d * min / max);
-            value = max / 255d;
+           ColorConverter.Rgb2Hsv(color.R, color.G, color.B, out h, out s, out v);
         }
-
-
-
 
 
     }

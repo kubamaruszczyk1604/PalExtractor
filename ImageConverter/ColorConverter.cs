@@ -10,105 +10,118 @@ namespace ImageConverter
     {
 
 
-        public static void Hsv2Rgb(double h, double S, double V, out int r, out int g, out int b)
+        public static void Hsv2Rgb(double h, double s, double v, out int r, out int g, out int b)
         {
-            double H = h;
-            while (H < 0) { H += 360; };
-            while (H >= 360) { H -= 360; };
+
+            h = (Math.Abs(h) % 360d)/60d;
             double R, G, B;
-            if (V <= 0)
-            { R = G = B = 0; }
-            else if (S <= 0)
+            if (v <= 0)
             {
-                R = G = B = V;
+                R = G = B = 0;
+            }
+            else if (s <= 0)
+            {
+                R = G = B = v;
             }
             else
             {
-                double hf = H / 60.0;
-                int i = (int)Math.Floor(hf);
-                double f = hf - i;
-                double pv = V * (1 - S);
-                double qv = V * (1 - S * f);
-                double tv = V * (1 - S * (1 - f));
-                switch (i)
+                int stepH = (int)Math.Floor(h);
+                double fractH = h - stepH;
+                double pv = v * (1 - s);
+                double qv = v * (1 - s * fractH);
+                double tv = v * (1 - s * (1 - fractH));
+
+                switch (stepH)
                 {
-
-                    // Red is the dominant color
-
+                    // Red dominant
                     case 0:
-                        R = V;
-                        G = tv;
-                        B = pv;
+                        R = v; G = tv; B = pv;
                         break;
 
-                    // Green is the dominant color
-
+                    // Green dominant
                     case 1:
-                        R = qv;
-                        G = V;
-                        B = pv;
+                        R = qv; G = v; B = pv;
                         break;
                     case 2:
-                        R = pv;
-                        G = V;
-                        B = tv;
+                        R = pv; G = v; B = tv;
                         break;
 
-                    // Blue is the dominant color
-
+                    // Blue dominant
                     case 3:
-                        R = pv;
-                        G = qv;
-                        B = V;
+                        R = pv; G = qv; B = v;
                         break;
                     case 4:
-                        R = tv;
-                        G = pv;
-                        B = V;
+                        R = tv; G = pv; B = v;
                         break;
 
-                    // Red is the dominant color
-
+                    // Red dominant
                     case 5:
-                        R = V;
-                        G = pv;
-                        B = qv;
+                        R = v; G = pv; B = qv;
                         break;
-
-                    // Just in case we overshoot on our math by a little, we put these here. Since its a switch it won't slow us down at all to put these here.
-
                     case 6:
-                        R = V;
-                        G = tv;
-                        B = pv;
+                        R = v; G = tv; B = pv;
                         break;
-                    case -1:
-                        R = V;
-                        G = pv;
-                        B = qv;
-                        break;
-
-                    // The color is not defined, we should throw an error.
 
                     default:
-                        //LFATAL("i Value error in Pixel conversion, Value is %d", i);
-                        R = G = B = V; // Just pretend its black/white
+                        R = G = B = v;
                         break;
                 }
             }
-            r = Clamp((int)(R * 255.0));
-            g = Clamp((int)(G * 255.0));
-            b = Clamp((int)(B * 255.0));
+            r = Norm2Int(R); g = Norm2Int(G); b = Norm2Int(B);
         }
 
-        /// <summary>
-        /// Clamp a value to 0-255
-        /// </summary>
-        static int Clamp(int i)
+        static int Norm2Int(double val)
         {
-            if (i < 0) return 0;
-            if (i > 255) return 255;
-            return i;
+            val *= 255d;
+            val = (val < 0) ? 0 : val;
+            val = (val > 255) ? 255 : val;
+            return (int)val;
+        }
+
+        static public double GetHue(int r, int g, int b)
+        {
+            double R = (double)r / 255d;
+            double G = (double)g / 255d;
+            double B = (double)b / 255d;
+
+            double M = Math.Max(R, G);
+            M = Math.Max(M, B);
+
+            double m = Math.Min(R, G);
+            m = Math.Min(m, B);
+
+            double C = M - m;
+            if (C == 0) return 0;
+
+            double hue = 0;
+            if (M == R)
+            {
+                hue = (G - B) / C;
+                hue %= 6;
+            }
+            else if (M == G)
+            {
+                hue = (B - R) / C;
+                hue += 2;
+            }
+            else if (M == B)
+            {
+                hue = (R - G) / C;
+                hue += 4;
+            }
+            return hue * 60;
+
+        }
+
+
+        public static void Rgb2Hsv(int r, int g, int b, out double hue, out double saturation, out double value)
+        {
+            int max = Math.Max(r, Math.Max(g, b));
+            int min = Math.Min(r, Math.Min(g, b));
+
+            hue = GetHue(r, g, b);
+            saturation = (max == 0) ? 0 : 1d - (1d * min / max);
+            value = max / 255d;
         }
     }
 }

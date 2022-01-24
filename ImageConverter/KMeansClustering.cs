@@ -82,7 +82,7 @@ namespace KMeans
                     distChanged += m_Clusters[iCluster].RecalculateCentroid();
                 }
                 Console.WriteLine("Convergence = " + distChanged);
-                if (distChanged < 0.01)
+                if (distChanged < 0.001)
                     break;
             }
             return m_Clusters;
