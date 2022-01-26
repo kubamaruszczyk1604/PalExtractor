@@ -116,10 +116,7 @@ namespace KMeans
 
     public class PixelData : DataVec
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
 
-        double val = 0;
 
         //public PixelData(int x, int y, double hue, double saturation):base(new double[] { hue, saturation})
         //{
@@ -128,10 +125,8 @@ namespace KMeans
         //}
 
 
-        public PixelData(int x, int y, double r, double g, double b) : base(new double[] { r, g, b })
+        public PixelData( double r, double g, double b) : base(new double[] { r, g, b })
         {
-            X = x;
-            Y = y;
         }
 
         public void SetRGB(double r, double g, double b)

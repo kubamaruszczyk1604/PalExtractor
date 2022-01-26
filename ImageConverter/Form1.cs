@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using KMeans;
+using ImageReader;
 
 namespace ImageConverter
 {
@@ -18,7 +19,7 @@ namespace ImageConverter
             InitializeComponent();
         }
         Image m_Image = null;
-
+        BitmapRGB m_Bitmap;
 
         private void button_Open_Click(object sender, EventArgs e)
         {
@@ -29,58 +30,71 @@ namespace ImageConverter
             {
                 
                 string s = sd.FileName;
-                m_Image = Image.FromFile(s);
-                Bitmap b = (Bitmap)m_Image;
-                ChangeColor(ref b);
-                pictureBox.Image = m_Image;                 
+                m_Bitmap = BitmapRGB.FromFile(s);
+                ChangeColor(ref m_Bitmap);
+                m_Image = Bitmap2Image(m_Bitmap);
+                //Bitmap b = (Bitmap)m_Image;
+                //ChangeColor(ref b);
+                 pictureBox.Image = m_Image;                 
             }
         }
         
-        public static void ChangeColor(ref Bitmap scrBitmap)
+        Image Bitmap2Image(BitmapRGB bitmap)
+        {
+            Bitmap img = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            for(int i = 0; i < bitmap.Pixels.Length; ++i)
+            {
+                int x = i % bitmap.Width;
+                int y = i / bitmap.Width;
+                Color c = Color.FromArgb(bitmap.Pixels[i].R, bitmap.Pixels[i].G, bitmap.Pixels[i].B);
+                img.SetPixel(x, y, c);
+            }
+            return img;
+        }
+
+
+        public static void ChangeColor(ref BitmapRGB scrBitmap)
         {
             List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
-            for (int i = 0; i < scrBitmap.Width; i++)
-            {
-                for (int j = 0; j < scrBitmap.Height; j++)
-                {
-                    Color c = scrBitmap.GetPixel(i, j);
-                    Color2Hsv(c, out double h, out double s, out double v);
 
-                    scrBitmap.SetPixel(i, j, Hsv2Color((float)h, (float)s, (float)v));
-                    //pixels.Add(new PixelData(i, j, (double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
+            for(int i = 0; i <  scrBitmap.Pixels.Length;++i)
+            {
+                Color2Hsv(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
+                scrBitmap.Pixels[i] = Hsv2Color((float)h, (float)s, (float)v);
+                PixelRGB c = scrBitmap.Pixels[i];
+                pixels.Add(new PixelData( (double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
+            }
+
+
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 3);
+            Cluster[] clusters = cl.Compute();
+            for (int i = 0; i < clusters.Length; ++i)
+            {
+                Cluster c = clusters[i];
+                for (int j = 0; j < c.Points.Count; ++j)
+                {
+                    ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
                 }
 
             }
 
-            //KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
-            //Cluster[] clusters = cl.Compute();
-            //for(int i = 0; i < clusters.Length;++i)
-            //{
-            //    Cluster c = clusters[i];
-            //    for(int j = 0; j < c.Points.Count; ++j)
-            //    {
-            //        ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
-            //    }
-
-            //}
-
-            //foreach(var pix in pixels)
-            //{
-            //    scrBitmap.SetPixel(pix.X, pix.Y, Color.FromArgb((int)(pix.Components[0]*255d), (int)(pix.Components[1]*255d), 
-            //        (int)(pix.Components[2]*255d)));
-            //}
+            for (int i = 0; i < pixels.Count; ++i)
+            {
+                scrBitmap.Pixels[i] = new PixelRGB((byte)(pixels[i].Components[0] * 255d), (byte)(pixels[i].Components[1] * 255d),
+                    (byte)(pixels[i].Components[2] * 255d));
+            }
         }
 
 
 
 
-       static  Color Hsv2Color(float h, float s, float v)
+       static  PixelRGB Hsv2Color(float h, float s, float v)
         {
             ColorConverter.Hsv2Rgb(h, s, v, out int r, out int g, out int b);
-            return Color.FromArgb(r, g, b);
+            return new PixelRGB((byte)r, (byte)g, (byte)b);
         }
 
-        public static void Color2Hsv(Color color, out double h, out double s, out double v)
+        public static void Color2Hsv(ref PixelRGB color, out double h, out double s, out double v)
         {
            ColorConverter.Rgb2Hsv(color.R, color.G, color.B, out h, out s, out v);
         }
