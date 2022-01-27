@@ -118,7 +118,13 @@ namespace ImageConverter
             }
         }
 
+        private void SaveTexture(string path)
+        {
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(path, false))
+            {
 
+            }
+        }
 
 
        static  PixelRGB HSV2RGB(float h, float s, float v)
