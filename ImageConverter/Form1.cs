@@ -29,14 +29,14 @@ namespace ImageConverter
             sd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
             if (sd.ShowDialog() == DialogResult.OK)
             {
-                
+
                 string s = sd.FileName;
                 m_Bitmap = BitmapRGB.FromFile(s);
-                //ClusterRGB(ref m_Bitmap);
-                ClusterHV(ref m_Bitmap);
+                ClusterRGB(ref m_Bitmap);
+                //ClusterHV(ref m_Bitmap);
                 m_Image = Bitmap2Image(m_Bitmap);
-   
-                pictureBox.Image = m_Image;                 
+
+                pictureBox.Image = m_Image;
             }
         }
 
@@ -54,6 +54,7 @@ namespace ImageConverter
                     {
                         Directory.CreateDirectory(path);
                         SavePalette(path + @"\palette.txt");
+                        SaveColorTexture(path + @"\color.tex");
                     }
                     else
                     {
@@ -94,22 +95,23 @@ namespace ImageConverter
             for (int i = 0; i < pixels.Count; ++i)
             {
                 scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), 1.0f);
-                    //(float)((Math.Round(pixels[i].Value*10d)/10d)));
+                //(float)((Math.Round(pixels[i].Value*10d)/10d)));
             }
         }
 
 
         List<PixelRGB> m_PaletteColors;
+
         public void ClusterRGB(ref BitmapRGB scrBitmap)
         {
             List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
 
-            for(int i = 0; i <  scrBitmap.Pixels.Length;++i)
+            for (int i = 0; i < scrBitmap.Pixels.Length; ++i)
             {
                 RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
                 scrBitmap.Pixels[i] = HSV2RGB((float)h, (float)s, (float)v);
                 PixelRGB c = scrBitmap.Pixels[i];
-                pixels.Add(new PixelData( (double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
+                pixels.Add(new PixelData((double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
             }
 
 
@@ -123,7 +125,7 @@ namespace ImageConverter
                 {
                     ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
                 }
-                m_PaletteColors.Add(new PixelRGB((byte)(c.Centroid.Components[0]*255d), (byte)(c.Centroid.Components[1]*255d), (byte)(c.Centroid.Components[2]*255d)));
+                m_PaletteColors.Add(new PixelRGB((byte)(c.Centroid.Components[0] * 255d), (byte)(c.Centroid.Components[1] * 255d), (byte)(c.Centroid.Components[2] * 255d)));
             }
 
             for (int i = 0; i < pixels.Count; ++i)
@@ -137,21 +139,48 @@ namespace ImageConverter
         {
             using (StreamWriter writer = new StreamWriter(path, false))
             {
-                if(m_PaletteColors != null)
+                if (m_PaletteColors == null) return;
+
+                foreach (var cl in m_PaletteColors)
                 {
-                    foreach(var cl in m_PaletteColors)
-                    {
-                        writer.WriteLine(cl.R.ToString() + "," + cl.G.ToString() + "," + cl.B.ToString());
-                    }
-                    writer.Close();
+                    writer.WriteLine(cl.R.ToString() + "," + cl.G.ToString() + "," + cl.B.ToString());
                 }
+                writer.Close();
+
+            }
+        }
+
+        private void SaveColorTexture(string path)
+        {
+            using (StreamWriter writer = new StreamWriter(path, false))
+            {
+                if (m_PaletteColors == null) return;
+
+                Dictionary<PixelRGB, int> map = new Dictionary<PixelRGB, int>(m_PaletteColors.Count);
+                for (int i = 0; i < m_PaletteColors.Count; ++i)
+                {
+                    map.Add(m_PaletteColors[i], i);
+                }
+              
+                for(int y = 0; y < m_Bitmap.Height; ++y)
+                {
+                    string row = "";
+                    for(int x = 0; x< m_Bitmap.Width; ++x)
+                    {
+                        row += map[m_Bitmap.GetPixel(x, y)].ToString() + ",";
+                    }
+                    row = row.Substring(0, row.Length - 1);
+                    writer.WriteLine(row);
+                }
+                writer.Close();
+
             }
         }
 
 
 
 
-       static  PixelRGB HSV2RGB(float h, float s, float v)
+        static PixelRGB HSV2RGB(float h, float s, float v)
         {
             ColorConverter.Hsv2Rgb(h, s, v, out int r, out int g, out int b);
             return new PixelRGB((byte)r, (byte)g, (byte)b);
@@ -159,7 +188,7 @@ namespace ImageConverter
 
         public static void RGB2HSV(ref PixelRGB color, out double h, out double s, out double v)
         {
-           ColorConverter.Rgb2Hsv(color.R, color.G, color.B, out h, out s, out v);
+            ColorConverter.Rgb2Hsv(color.R, color.G, color.B, out h, out s, out v);
         }
 
         Image Bitmap2Image(BitmapRGB bitmap)
