@@ -31,10 +31,10 @@ namespace ImageConverter
                 
                 string s = sd.FileName;
                 m_Bitmap = BitmapRGB.FromFile(s);
-                ChangeColor(ref m_Bitmap);
+                ClusterRGB(ref m_Bitmap);
+                //ClusterHV(ref m_Bitmap);
                 m_Image = Bitmap2Image(m_Bitmap);
-                //Bitmap b = (Bitmap)m_Image;
-                //ChangeColor(ref b);
+   
                  pictureBox.Image = m_Image;                 
             }
         }
@@ -53,20 +53,53 @@ namespace ImageConverter
         }
 
 
-        public static void ChangeColor(ref BitmapRGB scrBitmap)
+        public static void ClusterHV(ref BitmapRGB scrBitmap)
+        {
+            List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
+
+            for (int i = 0; i < scrBitmap.Pixels.Length; ++i)
+            {
+                RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
+                pixels.Add(new PixelData(h / 255d, s, (float)v));
+            }
+
+
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
+            Cluster[] clusters = cl.Compute();
+            for (int i = 0; i < clusters.Length; ++i)
+            {
+                Cluster c = clusters[i];
+                for (int j = 0; j < c.Points.Count; ++j)
+                {
+                    ((PixelData)c.Points[j]).SetHueSat(c.Centroid.Components[0], c.Centroid.Components[1]);
+                }
+
+            }
+
+            for (int i = 0; i < pixels.Count; ++i)
+            {
+                //scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 255d), 0.0f, (float)((Math.Round(pixels[i].Value * 10d) / 10d)));
+
+                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 255d), (float)(pixels[i].Components[1]),  
+                    (float)((Math.Round(pixels[i].Value*10d)/10d)));
+            }
+        }
+
+
+        public static void ClusterRGB(ref BitmapRGB scrBitmap)
         {
             List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
 
             for(int i = 0; i <  scrBitmap.Pixels.Length;++i)
             {
-                Color2Hsv(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
-                scrBitmap.Pixels[i] = Hsv2Color((float)h, (float)s, (float)v);
+                RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
+                scrBitmap.Pixels[i] = HSV2RGB((float)h, (float)s, (float)v);
                 PixelRGB c = scrBitmap.Pixels[i];
                 pixels.Add(new PixelData( (double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
             }
 
 
-            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 3);
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
             Cluster[] clusters = cl.Compute();
             for (int i = 0; i < clusters.Length; ++i)
             {
@@ -88,13 +121,13 @@ namespace ImageConverter
 
 
 
-       static  PixelRGB Hsv2Color(float h, float s, float v)
+       static  PixelRGB HSV2RGB(float h, float s, float v)
         {
             ColorConverter.Hsv2Rgb(h, s, v, out int r, out int g, out int b);
             return new PixelRGB((byte)r, (byte)g, (byte)b);
         }
 
-        public static void Color2Hsv(ref PixelRGB color, out double h, out double s, out double v)
+        public static void RGB2HSV(ref PixelRGB color, out double h, out double s, out double v)
         {
            ColorConverter.Rgb2Hsv(color.R, color.G, color.B, out h, out s, out v);
         }
