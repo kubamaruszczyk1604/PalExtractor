@@ -30,6 +30,7 @@ namespace ImageConverter
         {
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.button_Open = new System.Windows.Forms.Button();
+            this.button_save = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,11 +54,22 @@ namespace ImageConverter
             this.button_Open.UseVisualStyleBackColor = true;
             this.button_Open.Click += new System.EventHandler(this.button_Open_Click);
             // 
+            // button_save
+            // 
+            this.button_save.Location = new System.Drawing.Point(854, 52);
+            this.button_save.Name = "button_save";
+            this.button_save.Size = new System.Drawing.Size(296, 34);
+            this.button_save.TabIndex = 2;
+            this.button_save.Text = "Save";
+            this.button_save.UseVisualStyleBackColor = true;
+            this.button_save.Click += new System.EventHandler(this.button_save_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1162, 646);
+            this.Controls.Add(this.button_save);
             this.Controls.Add(this.button_Open);
             this.Controls.Add(this.pictureBox);
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -72,6 +84,7 @@ namespace ImageConverter
 
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Button button_Open;
+        private System.Windows.Forms.Button button_save;
     }
 }
 
