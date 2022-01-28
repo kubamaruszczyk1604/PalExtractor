@@ -17,6 +17,7 @@ namespace KMeans
         private DataVec[] p_DataPoints;
         private Cluster[] m_Clusters;
 
+
         /// <summary>
         /// Create instance of KMeansClustering clasifier.
         /// </summary>

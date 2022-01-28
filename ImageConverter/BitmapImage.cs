@@ -14,6 +14,7 @@ namespace ImageReader
         public byte G { get; set; }
         public byte B { get; set; }
 
+
         public PixelRGB(byte r, byte g, byte b)
         {
             R = r;
@@ -27,6 +28,7 @@ namespace ImageReader
         public PixelRGB[] Pixels { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public Image OriginalImage { get; private set; }
 
         private static int XY2I(int x, int y, int w)
         {
@@ -41,7 +43,7 @@ namespace ImageReader
                 Image img = Image.FromFile(s);
                 int w = img.Width;
                 int h = img.Height;
-
+                
 
                 float sf = 1.0f;  
                 if(limit.Width>0 &&  w >limit.Width)
@@ -69,9 +71,11 @@ namespace ImageReader
                         data[XY2I(i, j, b.Width)] = new PixelRGB(c.R, c.G, c.B);
                     }
                 }
-                img.Dispose();
+                //img.Dispose();
                 b.Dispose();
-                return new BitmapRGB(data, w, h);
+                BitmapRGB ret = new BitmapRGB(data, w, h);
+                ret.OriginalImage = img;
+                return ret;
             }
             catch
             {

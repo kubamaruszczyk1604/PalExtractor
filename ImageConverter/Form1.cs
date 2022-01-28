@@ -36,11 +36,12 @@ namespace ImageConverter
                 m_Bitmap = BitmapRGB.FromFile(s, new Size(320,200));
                 //ClusterRGB(ref m_Bitmap);
                 //ClusterHV(ref m_Bitmap);
-                pictureBoxLeft.BackColor = Color.Black;
-                m_Image = Bitmap2Image(m_Bitmap);
-               
+                //pictureBoxLeft.BackColor = Color.Black;
+                m_Image = m_Bitmap.OriginalImage;
+                    //Bitmap2Image(m_Bitmap);
+              
                 pictureBoxLeft.Image = m_Image;
-                label1.Text = "Source resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Height.ToString();
+                label1.Text = "Source resolution: " + m_Image.Width.ToString() + " x " + m_Image.Height.ToString();
             }
 
 
@@ -232,11 +233,13 @@ namespace ImageConverter
             //new Task(() => { ClusterRGB(ref m_Bitmap); }).Start();
             button_Convert.Enabled = false;
             button_save.Enabled = false;
+            label2.Text = "Calculating... Please wait.";
             await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
             pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
             Console.WriteLine("Done");
             button_Convert.Enabled = true;
             button_save.Enabled = true;
+            label2.Text = "Destination Resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Width.ToString();
         }
     }
 }
