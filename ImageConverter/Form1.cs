@@ -42,7 +42,7 @@ namespace ImageConverter
 
         private void button_save_Click(object sender, EventArgs e)
         {
-            string name = "nowa_textura";
+            string name = "nowa_textura6";
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
@@ -78,9 +78,10 @@ namespace ImageConverter
             }
 
 
-            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
             Cluster[] clusters = cl.Compute();
-            m_PaletteColors = new List<PixelRGB>(clusters.Length);
+            m_PaletteColors = new List<PixelRGB>(clusters.Length+1);
+            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
             for (int i = 0; i < clusters.Length; ++i)
             {
                 Cluster c = clusters[i];
@@ -94,8 +95,8 @@ namespace ImageConverter
 
             for (int i = 0; i < pixels.Count; ++i)
             {
-                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), 1.0f);
-                //(float)((Math.Round(pixels[i].Value*10d)/10d)));
+                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]),
+                (float)((Math.Round(pixels[i].Value*10d)/10d)));
             }
         }
 
@@ -115,9 +116,10 @@ namespace ImageConverter
             }
 
 
-            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16);
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
             Cluster[] clusters = cl.Compute();
-            m_PaletteColors = new List<PixelRGB>(clusters.Length);
+            m_PaletteColors = new List<PixelRGB>(clusters.Length+1);
+            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
             for (int i = 0; i < clusters.Length; ++i)
             {
                 Cluster c = clusters[i];
@@ -159,7 +161,17 @@ namespace ImageConverter
                 Dictionary<PixelRGB, int> map = new Dictionary<PixelRGB, int>(m_PaletteColors.Count);
                 for (int i = 0; i < m_PaletteColors.Count; ++i)
                 {
-                    map.Add(m_PaletteColors[i], i);
+                    try
+                    {
+                        map.Add(m_PaletteColors[i], i);
+                    }
+                    catch
+                    {
+                        PixelRGB p = m_PaletteColors[i];
+                        p.R -= 20;
+
+                        map.Add(p, i);
+                    }
                 }
               
                 for(int y = 0; y < m_Bitmap.Height; ++y)
