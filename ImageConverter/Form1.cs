@@ -18,6 +18,8 @@ namespace ImageConverter
         public Form1()
         {
             InitializeComponent();
+            button_save.Enabled = false;
+            //button_Convert.Enabled = false;
         }
         Image m_Image = null;
         BitmapRGB m_Bitmap;
@@ -31,13 +33,17 @@ namespace ImageConverter
             {
 
                 string s = sd.FileName;
-                m_Bitmap = BitmapRGB.FromFile(s);
-                ClusterRGB(ref m_Bitmap);
+                m_Bitmap = BitmapRGB.FromFile(s, new Size(320,200));
+                //ClusterRGB(ref m_Bitmap);
                 //ClusterHV(ref m_Bitmap);
+                pictureBoxLeft.BackColor = Color.Black;
                 m_Image = Bitmap2Image(m_Bitmap);
-
-                pictureBox.Image = m_Image;
+               
+                pictureBoxLeft.Image = m_Image;
+                label1.Text = "Source resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Height.ToString();
             }
+
+
         }
 
         private void button_save_Click(object sender, EventArgs e)
@@ -214,6 +220,23 @@ namespace ImageConverter
                 img.SetPixel(x, y, c);
             }
             return img;
+        }
+
+        private async void button_Convert_Click(object sender, EventArgs e)
+        {
+            if (m_Bitmap == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            //new Task(() => { ClusterRGB(ref m_Bitmap); }).Start();
+            button_Convert.Enabled = false;
+            button_save.Enabled = false;
+            await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
+            pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
+            Console.WriteLine("Done");
+            button_Convert.Enabled = true;
+            button_save.Enabled = true;
         }
     }
 }
