@@ -31,14 +31,10 @@ namespace ImageConverter
             sd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
             if (sd.ShowDialog() == DialogResult.OK)
             {
-
+                if (m_Image != null) m_Image.Dispose();
                 string s = sd.FileName;
-                m_Bitmap = BitmapRGB.FromFile(s, new Size(320,200));
-                //ClusterRGB(ref m_Bitmap);
-                //ClusterHV(ref m_Bitmap);
-                //pictureBoxLeft.BackColor = Color.Black;
+                m_Bitmap = BitmapRGB.FromFile(s, new Size(320,240));
                 m_Image = m_Bitmap.OriginalImage;
-                    //Bitmap2Image(m_Bitmap);
               
                 pictureBoxLeft.Image = m_Image;
                 label1.Text = "Source resolution: " + m_Image.Width.ToString() + " x " + m_Image.Height.ToString();
@@ -49,7 +45,7 @@ namespace ImageConverter
 
         private void button_save_Click(object sender, EventArgs e)
         {
-            string name = "nowa_textura6";
+            string name = "nowa_textura7";
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
@@ -239,7 +235,7 @@ namespace ImageConverter
             Console.WriteLine("Done");
             button_Convert.Enabled = true;
             button_save.Enabled = true;
-            label2.Text = "Destination Resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Width.ToString();
+            label2.Text = "Destination Resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Height.ToString();
         }
     }
 }

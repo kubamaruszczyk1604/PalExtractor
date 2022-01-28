@@ -115,6 +115,12 @@ namespace ImageReader
             Pixels[XY2I(x, y, Width)].B = b;
         }
 
+        public void Dispose()
+        {
+            OriginalImage.Dispose();
+            Pixels = null;
+        }
+
 
     }
 }
