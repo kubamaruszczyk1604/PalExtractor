@@ -46,35 +46,65 @@ namespace ImageConverter
 
         private void button_save_Click(object sender, EventArgs e)
         {
-            string name = "nowa_textura8";
-            using (var fbd = new FolderBrowserDialog())
+
+            var dialog = new ExportDialogForm();
+            dialog.SetPaletteImage(pictureBoxPalette.Image);
+            dialog.SetChromaImage(pictureBoxRight.Image);
+            dialog.ShowDialog();
+
+            if(dialog.Result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.OutputDir))
             {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                try
                 {
-                    try
+                    string path = dialog.OutputDir + @"\";
+                    if (!Directory.Exists(path))
                     {
-                        string path = fbd.SelectedPath + @"\" + name;
-                        if (!Directory.Exists(path))
-                        {
-                            Directory.CreateDirectory(path);
-                        }
-                        SavePalette(path + @"\palette.txt");
-                        SaveColorTexture(path + @"\color.tex");
-                        if (m_IntensityBuffer != null)
-                        {
-                            SaveIntensityBuffer(path + @"\luma.buf");
-                            m_IntensityBuffer = null;
-                        }
+                        Directory.CreateDirectory(path);
                     }
-                    catch(Exception ex)
+                    SavePalette(path + @"\palette.txt");
+                    SaveColorTexture(path + @"\color.tex");
+                    if (m_IntensityBuffer != null)
                     {
-                        MessageBox.Show("Reason: " + ex.Message, "Failed to save");
+                        SaveIntensityBuffer(path + @"\luma.buf");
+                        m_IntensityBuffer = null;
                     }
-
+                    MessageBox.Show( path, "Texture package saved!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Reason: " + ex.Message, "Failed to save");
                 }
             }
+
+            //string name = "nowa_textura8";
+            //using (var fbd = new FolderBrowserDialog())
+            //{
+            //    DialogResult result = fbd.ShowDialog();
+
+            //    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            //    {
+            //        try
+            //        {
+            //            string path = fbd.SelectedPath + @"\" + name;
+            //            if (!Directory.Exists(path))
+            //            {
+            //                Directory.CreateDirectory(path);
+            //            }
+            //            SavePalette(path + @"\palette.txt");
+            //            SaveColorTexture(path + @"\color.tex");
+            //            if (m_IntensityBuffer != null)
+            //            {
+            //                SaveIntensityBuffer(path + @"\luma.buf");
+            //                m_IntensityBuffer = null;
+            //            }
+            //        }
+            //        catch(Exception ex)
+            //        {
+            //            MessageBox.Show("Reason: " + ex.Message, "Failed to save");
+            //        }
+
+            //    }
+            //}
         }
 
 

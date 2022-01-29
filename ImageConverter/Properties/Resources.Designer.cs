@@ -83,6 +83,16 @@ namespace ImageConverter.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap na_img {
+            get {
+                object obj = ResourceManager.GetObject("na_img", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap semi_tansparent_logo1 {
             get {
                 object obj = ResourceManager.GetObject("semi_tansparent_logo1", resourceCulture);
