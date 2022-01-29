@@ -171,7 +171,7 @@ namespace ImageConverter
                     catch
                     {
                         PixelRGB p = m_PaletteColors[i];
-                        p.R -= 20;
+                        p.R -= 1;
 
                         map.Add(p, i);
                     }
@@ -236,6 +236,23 @@ namespace ImageConverter
             button_Convert.Enabled = true;
             button_save.Enabled = true;
             label2.Text = "Destination Resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Height.ToString();
+            DrawPalette();
+        }
+
+        private void DrawPalette()
+        {
+            pictureBoxPalette.Image = new Bitmap(512, 40);
+            Bitmap img = (Bitmap)pictureBoxPalette.Image;
+            for (int x = 0; x < img.Width; ++x)
+            {
+                int ind = (int)(((float)x) / ((float)img.Width) * 16.0f);
+                PixelRGB col = m_PaletteColors[ind];
+                Color c = Color.FromArgb(col.R, col.G, col.B);
+                for(int y =0; y < img.Height; ++y)
+                {
+                    img.SetPixel(x, y, c);
+                }
+            }
         }
     }
 }

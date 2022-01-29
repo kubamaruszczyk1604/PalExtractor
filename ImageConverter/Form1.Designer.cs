@@ -36,15 +36,17 @@ namespace ImageConverter
             this.button_Convert = new System.Windows.Forms.Button();
             this.pictureBoxRight = new System.Windows.Forms.PictureBox();
             this.pictureBoxLeft = new System.Windows.Forms.PictureBox();
+            this.pictureBoxPalette = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).BeginInit();
             this.SuspendLayout();
             // 
             // button_Open
             // 
             this.button_Open.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Open.ForeColor = System.Drawing.Color.Aquamarine;
-            this.button_Open.Location = new System.Drawing.Point(22, 520);
+            this.button_Open.Location = new System.Drawing.Point(12, 573);
             this.button_Open.Name = "button_Open";
             this.button_Open.Size = new System.Drawing.Size(124, 29);
             this.button_Open.TabIndex = 1;
@@ -56,7 +58,7 @@ namespace ImageConverter
             // 
             this.button_save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_save.ForeColor = System.Drawing.Color.Aquamarine;
-            this.button_save.Location = new System.Drawing.Point(1327, 522);
+            this.button_save.Location = new System.Drawing.Point(1320, 574);
             this.button_save.Name = "button_save";
             this.button_save.Size = new System.Drawing.Size(124, 28);
             this.button_save.TabIndex = 1;
@@ -124,12 +126,21 @@ namespace ImageConverter
             this.pictureBoxLeft.TabIndex = 0;
             this.pictureBoxLeft.TabStop = false;
             // 
+            // pictureBoxPalette
+            // 
+            this.pictureBoxPalette.Location = new System.Drawing.Point(777, 569);
+            this.pictureBoxPalette.Name = "pictureBoxPalette";
+            this.pictureBoxPalette.Size = new System.Drawing.Size(512, 40);
+            this.pictureBoxPalette.TabIndex = 8;
+            this.pictureBoxPalette.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(87)))));
-            this.ClientSize = new System.Drawing.Size(1473, 572);
+            this.ClientSize = new System.Drawing.Size(1473, 614);
+            this.Controls.Add(this.pictureBoxPalette);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_Convert);
@@ -146,6 +157,7 @@ namespace ImageConverter
             this.Text = "NE Texture Generator";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -160,6 +172,7 @@ namespace ImageConverter
         private System.Windows.Forms.Button button_Convert;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.PictureBox pictureBoxPalette;
     }
 }
 
