@@ -49,7 +49,7 @@ namespace ImageConverter
 
             var dialog = new ExportDialogForm();
             dialog.SetPaletteImage(pictureBoxPalette.Image);
-            dialog.SetChromaImage(pictureBoxRight.Image);
+            dialog.SetChromaImage(Bitmap2Image(m_Bitmap));
             if(m_IntensityBuffer != null)
             {
                 dialog.SetLumaImage(Intensity2Image(m_IntensityBuffer));
@@ -281,6 +281,23 @@ namespace ImageConverter
             return img;
         }
 
+        Image Bitmap2Image(BitmapRGB bitmap, FBuffer buffer)
+        {
+            Bitmap img = new Bitmap(bitmap.Width, bitmap.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            for (int i = 0; i < bitmap.Pixels.Length; ++i)
+            {
+                int x = i % bitmap.Width;
+                int y = i / bitmap.Width;
+                float lum =   buffer.Data[i];
+                Color c = Color.FromArgb(
+                    (int)(((float)bitmap.Pixels[i].R)*lum), 
+                    (int)(((float)bitmap.Pixels[i].G)*lum),
+                    (int)(((float)bitmap.Pixels[i].B)*lum));
+                img.SetPixel(x, y, c);
+            }
+            return img;
+        }
+
         Image Intensity2Image(FBuffer buffer)
         {
             Bitmap img = new Bitmap(buffer.Width, buffer.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -307,7 +324,7 @@ namespace ImageConverter
             button_save.Enabled = false;
             label2.Text = "Calculating... Please wait.";
             await Task.Run(() => { ClusterHV(ref m_Bitmap); });
-            pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
+            pictureBoxRight.Image = Bitmap2Image(m_Bitmap,m_IntensityBuffer);
             Console.WriteLine("Done");
             button_Convert.Enabled = true;
             button_save.Enabled = true;
