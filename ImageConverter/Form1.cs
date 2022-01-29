@@ -50,6 +50,10 @@ namespace ImageConverter
             var dialog = new ExportDialogForm();
             dialog.SetPaletteImage(pictureBoxPalette.Image);
             dialog.SetChromaImage(pictureBoxRight.Image);
+            if(m_IntensityBuffer != null)
+            {
+                dialog.SetLumaImage(Intensity2Image(m_IntensityBuffer));
+            }
             dialog.ShowDialog();
 
             if(dialog.Result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.OutputDir))
@@ -272,6 +276,20 @@ namespace ImageConverter
                 int x = i % bitmap.Width;
                 int y = i / bitmap.Width;
                 Color c = Color.FromArgb(bitmap.Pixels[i].R, bitmap.Pixels[i].G, bitmap.Pixels[i].B);
+                img.SetPixel(x, y, c);
+            }
+            return img;
+        }
+
+        Image Intensity2Image(FBuffer buffer)
+        {
+            Bitmap img = new Bitmap(buffer.Width, buffer.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            for (int i = 0; i < buffer.Data.Length; ++i)
+            {
+                int x = i % buffer.Width;
+                int y = i / buffer.Width;
+                int lum = (int)(buffer.Data[i] * 255f);
+                Color c = Color.FromArgb(lum,lum,lum);
                 img.SetPixel(x, y, c);
             }
             return img;
