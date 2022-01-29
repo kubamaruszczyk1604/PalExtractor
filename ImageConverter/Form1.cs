@@ -23,6 +23,7 @@ namespace ImageConverter
         }
         Image m_Image = null;
         BitmapRGB m_Bitmap;
+        FBuffer m_IntensityBuffer;
 
         private void button_Open_Click(object sender, EventArgs e)
         {
@@ -45,24 +46,33 @@ namespace ImageConverter
 
         private void button_save_Click(object sender, EventArgs e)
         {
-            string name = "nowa_textura7";
+            string name = "nowa_textura8";
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
-                    string path = fbd.SelectedPath + @"\" + name;
-                    if (!Directory.Exists(path))
+                    try
                     {
-                        Directory.CreateDirectory(path);
+                        string path = fbd.SelectedPath + @"\" + name;
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
                         SavePalette(path + @"\palette.txt");
                         SaveColorTexture(path + @"\color.tex");
+                        if (m_IntensityBuffer != null)
+                        {
+                            SaveIntensityBuffer(path + @"\luma.buf");
+                            m_IntensityBuffer = null;
+                        }
                     }
-                    else
+                    catch(Exception ex)
                     {
-                        MessageBox.Show("Texture already exists!", "Can't save here");
+                        MessageBox.Show("Reason: " + ex.Message, "Failed to save");
                     }
+
                 }
             }
         }
@@ -95,11 +105,12 @@ namespace ImageConverter
                 m_PaletteColors.Add(HSV2RGB((float)(c.Centroid.Components[0] * 360d), (float)(c.Centroid.Components[1]), 1.0f));
 
             }
-
+            m_IntensityBuffer = new FBuffer(scrBitmap.Width, scrBitmap.Height);
             for (int i = 0; i < pixels.Count; ++i)
             {
-                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]),
-                (float)((Math.Round(pixels[i].Value*10d)/10d)));
+                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), 1.0f);
+                m_IntensityBuffer.SetField(i, pixels[i].Value);
+                //(float)((Math.Round(pixels[i].Value*10d)/10d)));
             }
         }
 
@@ -193,7 +204,24 @@ namespace ImageConverter
         }
 
 
+        private void SaveIntensityBuffer(string path)
+        {
+            using (StreamWriter writer = new StreamWriter(path, false))
+            {
 
+                for (int y = 0; y < m_IntensityBuffer.Height; ++y)
+                {
+                    string row = "";
+                    for (int x = 0; x < m_IntensityBuffer.Width; ++x)
+                    {
+                        row += m_IntensityBuffer.GetField(x,y).ToString() + ",";
+                    }
+                    row = row.Substring(0, row.Length - 1);
+                    writer.WriteLine(row);
+                }
+                writer.Close();
+            }
+        }
 
         static PixelRGB HSV2RGB(float h, float s, float v)
         {
@@ -230,7 +258,7 @@ namespace ImageConverter
             button_Convert.Enabled = false;
             button_save.Enabled = false;
             label2.Text = "Calculating... Please wait.";
-            await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
+            await Task.Run(() => { ClusterHV(ref m_Bitmap); });
             pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
             Console.WriteLine("Done");
             button_Convert.Enabled = true;

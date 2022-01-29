@@ -51,6 +51,7 @@
     <Compile Include="Cluster.cs" />
     <Compile Include="ColorConverter.cs" />
     <Compile Include="DataVec.cs" />
+    <Compile Include="FBuffer.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
