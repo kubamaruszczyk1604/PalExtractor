@@ -117,28 +117,17 @@ namespace KMeans
     public class PixelData : DataVec
     {
 
-        public float Value;
-        public PixelData(double hue, double saturation, float value) : base(new double[] { hue, saturation })
-        {
-            Value = value;
-        }
-
 
         public PixelData( double r, double g, double b) : base(new double[] { r, g, b })
         {
         }
 
-        public void SetRGB(double r, double g, double b)
-        {
-            Components[0] = r;
-            Components[1] = g;
-            Components[2] = b;
-        }
 
-        public void SetHueSat(double hue, double sat)
+        public void Set(double hue, double sat, double val)
         {
             Components[0] = hue;
             Components[1] = sat;
+            Components[2] = val;
         }
     }
 }

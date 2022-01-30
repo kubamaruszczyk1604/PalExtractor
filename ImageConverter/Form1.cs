@@ -94,29 +94,31 @@ namespace ImageConverter
             for (int i = 0; i < scrBitmap.Pixels.Length; ++i)
             {
                 RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
-                pixels.Add(new PixelData(h / 360d, s, (float)v));
+                pixels.Add(new PixelData(h / 360d, s, v));
             }
 
 
             KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
             Cluster[] clusters = cl.Compute();
+
             m_PaletteColors = new List<PixelRGB>(clusters.Length+1);
-            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
+            
             for (int i = 0; i < clusters.Length; ++i)
             {
                 Cluster c = clusters[i];
                 for (int j = 0; j < c.Points.Count; ++j)
                 {
-                    ((PixelData)c.Points[j]).SetHueSat(c.Centroid.Components[0], c.Centroid.Components[1]);
+                    ((PixelData)c.Points[j]).Set(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
                 }
-                m_PaletteColors.Add(HSV2RGB((float)(c.Centroid.Components[0] * 360d), (float)(c.Centroid.Components[1]), 1.0f));
+                m_PaletteColors.Add(HSV2RGB((float)(c.Centroid.Components[0] * 360d), (float)(c.Centroid.Components[1]), (float)(c.Centroid.Components[2])));
 
             }
+            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
             m_IntensityBuffer = new FBuffer(scrBitmap.Width, scrBitmap.Height);
             for (int i = 0; i < pixels.Count; ++i)
             {
-                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), 1.0f);
-                m_IntensityBuffer.SetField(i, pixels[i].Value);
+                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), (float)(pixels[i].Components[2]));
+                m_IntensityBuffer.SetField(i, (float)(pixels[i].Components[2]));
                 //(float)((Math.Round(pixels[i].Value*10d)/10d)));
             }
         }
@@ -146,18 +148,20 @@ namespace ImageConverter
                 Cluster c = clusters[i];
                 for (int j = 0; j < c.Points.Count; ++j)
                 {
-                    ((PixelData)c.Points[j]).SetRGB(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
+                    ((PixelData)c.Points[j]).Set(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
                 }
                 m_PaletteColors.Add(new PixelRGB((byte)(c.Centroid.Components[0] * 255d), (byte)(c.Centroid.Components[1] * 255d), (byte)(c.Centroid.Components[2] * 255d)));
             }
 
-
+            m_IntensityBuffer = new FBuffer(scrBitmap.Width, scrBitmap.Height);
             for (int i = 0; i < pixels.Count; ++i)
             {
                 scrBitmap.Pixels[i] = new PixelRGB((byte)(pixels[i].Components[0] * 255d), (byte)(pixels[i].Components[1] * 255d),
                     (byte)(pixels[i].Components[2] * 255d));
 
-               
+                RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
+                m_IntensityBuffer.SetField(i, (float)v);
+
             }
         }
 

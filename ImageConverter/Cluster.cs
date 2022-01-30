@@ -59,7 +59,7 @@ namespace KMeans
             do
             {
                 cnt++;
-                if (cnt > 1000)
+                if (cnt > 10000)
                 {
                     throw new Exception("Cannot do centroid placement.");
                 }
