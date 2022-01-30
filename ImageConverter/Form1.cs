@@ -66,9 +66,9 @@ namespace ImageConverter
                     {
                         Directory.CreateDirectory(path);
                     }
-                    SavePalette(path + @"\palette.txt");
-                    SaveColorTexture(path + @"\color.tex");
-                    if (m_IntensityBuffer != null)
+                    if(dialog.PaletteChecked) SavePalette(path + @"\palette.txt");
+                    if(dialog.ChromaChecked) SaveColorTexture(path + @"\color.tex");
+                    if (m_IntensityBuffer != null && dialog.LumaChecked)
                     {
                         SaveIntensityBuffer(path + @"\luma.buf");
                         m_IntensityBuffer = null;
@@ -130,10 +130,10 @@ namespace ImageConverter
 
             for (int i = 0; i < scrBitmap.Pixels.Length; ++i)
             {
-                RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
-                scrBitmap.Pixels[i] = HSV2RGB((float)h, (float)s, (float)v);
+               // RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
+                //scrBitmap.Pixels[i] = HSV2RGB((float)h, (float)s, (float)v);
                 PixelRGB c = scrBitmap.Pixels[i];
-                pixels.Add(new PixelData((double)c.R / 255d, (double)c.G / 255d, (double)c.B / 255d));
+                pixels.Add(new PixelData(((double)c.R) / 255d, ((double)c.G / 255d), ((double)c.B / 255d)));
             }
 
 
@@ -151,10 +151,13 @@ namespace ImageConverter
                 m_PaletteColors.Add(new PixelRGB((byte)(c.Centroid.Components[0] * 255d), (byte)(c.Centroid.Components[1] * 255d), (byte)(c.Centroid.Components[2] * 255d)));
             }
 
+
             for (int i = 0; i < pixels.Count; ++i)
             {
                 scrBitmap.Pixels[i] = new PixelRGB((byte)(pixels[i].Components[0] * 255d), (byte)(pixels[i].Components[1] * 255d),
                     (byte)(pixels[i].Components[2] * 255d));
+
+               
             }
         }
 

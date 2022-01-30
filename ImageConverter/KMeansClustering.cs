@@ -12,7 +12,7 @@ namespace KMeans
     public class KMeansClustering
     {
 
-        private readonly int MAX_ITERATIONS = 100;
+        private readonly int MAX_ITERATIONS = 1000;
         private int m_K;
         private DataVec[] p_DataPoints;
         private Cluster[] m_Clusters;
@@ -83,7 +83,7 @@ namespace KMeans
                     distChanged += m_Clusters[iCluster].RecalculateCentroid();
                 }
                 Console.WriteLine("Convergence = " + distChanged);
-                if (distChanged < 0.001)
+                if (distChanged < 0.00001)
                     break;
             }
             return m_Clusters;
