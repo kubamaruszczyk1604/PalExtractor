@@ -36,7 +36,8 @@ namespace ImageConverter
                 string s = sd.FileName;
                 m_Bitmap = BitmapRGB.FromFile(s, new Size(320,240));
                 m_Image = m_Bitmap.OriginalImage;
-              
+
+                pictureBoxLeft.BackColor = Color.Black;
                 pictureBoxLeft.Image = m_Image;
                 label1.Text = "Source resolution: " + m_Image.Width.ToString() + " x " + m_Image.Height.ToString();
             }
@@ -80,35 +81,7 @@ namespace ImageConverter
                 }
             }
 
-            //string name = "nowa_textura8";
-            //using (var fbd = new FolderBrowserDialog())
-            //{
-            //    DialogResult result = fbd.ShowDialog();
 
-            //    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-            //    {
-            //        try
-            //        {
-            //            string path = fbd.SelectedPath + @"\" + name;
-            //            if (!Directory.Exists(path))
-            //            {
-            //                Directory.CreateDirectory(path);
-            //            }
-            //            SavePalette(path + @"\palette.txt");
-            //            SaveColorTexture(path + @"\color.tex");
-            //            if (m_IntensityBuffer != null)
-            //            {
-            //                SaveIntensityBuffer(path + @"\luma.buf");
-            //                m_IntensityBuffer = null;
-            //            }
-            //        }
-            //        catch(Exception ex)
-            //        {
-            //            MessageBox.Show("Reason: " + ex.Message, "Failed to save");
-            //        }
-
-            //    }
-            //}
         }
 
 
@@ -257,13 +230,13 @@ namespace ImageConverter
             }
         }
 
-        static PixelRGB HSV2RGB(float h, float s, float v)
+        private static PixelRGB HSV2RGB(float h, float s, float v)
         {
             ColorConverter.Hsv2Rgb(h, s, v, out int r, out int g, out int b);
             return new PixelRGB((byte)r, (byte)g, (byte)b);
         }
 
-        public static void RGB2HSV(ref PixelRGB color, out double h, out double s, out double v)
+       private static void RGB2HSV(ref PixelRGB color, out double h, out double s, out double v)
         {
             ColorConverter.Rgb2Hsv(color.R, color.G, color.B, out h, out s, out v);
         }
@@ -323,8 +296,9 @@ namespace ImageConverter
             button_Convert.Enabled = false;
             button_save.Enabled = false;
             label2.Text = "Calculating... Please wait.";
-            await Task.Run(() => { ClusterHV(ref m_Bitmap); });
-            pictureBoxRight.Image = Bitmap2Image(m_Bitmap,m_IntensityBuffer);
+            await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
+            pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
+            pictureBoxRight.BackColor = Color.Black;
             Console.WriteLine("Done");
             button_Convert.Enabled = true;
             button_save.Enabled = true;
