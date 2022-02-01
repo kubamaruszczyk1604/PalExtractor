@@ -87,7 +87,7 @@ namespace ImageConverter
 
 
 
-        public void ClusterHV(ref BitmapRGB scrBitmap)
+        public void ClusterHV(ref BitmapRGB scrBitmap, bool excludeSaturation = false)
         {
             List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
 
@@ -102,7 +102,7 @@ namespace ImageConverter
             Cluster[] clusters = cl.Compute();
 
             m_PaletteColors = new List<PixelRGB>(clusters.Length+1);
-            
+            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
             for (int i = 0; i < clusters.Length; ++i)
             {
                 Cluster c = clusters[i];
@@ -110,16 +110,17 @@ namespace ImageConverter
                 {
                     ((PixelData)c.Points[j]).Set(c.Centroid.Components[0], c.Centroid.Components[1], c.Centroid.Components[2]);
                 }
-                m_PaletteColors.Add(HSV2RGB((float)(c.Centroid.Components[0] * 360d), (float)(c.Centroid.Components[1]), (float)(c.Centroid.Components[2])));
-
+                float val = excludeSaturation ? 1.0f : (float)(c.Centroid.Components[2]);
+                m_PaletteColors.Add(HSV2RGB((float)(c.Centroid.Components[0] * 360d), (float)(c.Centroid.Components[1]), val));
+                   
             }
-            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
+            
             m_IntensityBuffer = new FBuffer(scrBitmap.Width, scrBitmap.Height);
             for (int i = 0; i < pixels.Count; ++i)
             {
-                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), (float)(pixels[i].Components[2]));
+                float val = excludeSaturation ? 1.0f : (float)(pixels[i].Components[2]);
+                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), val);
                 m_IntensityBuffer.SetField(i, (float)(pixels[i].Components[2]));
-                //(float)((Math.Round(pixels[i].Value*10d)/10d)));
             }
         }
 
@@ -303,7 +304,18 @@ namespace ImageConverter
             button_Convert.Enabled = false;
             button_save.Enabled = false;
             label2.Text = "Calculating... Please wait.";
-            await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
+            if (trackBar1.Value == 2)
+            {
+                await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
+            }
+            else if(trackBar1.Value == 1)
+            {
+                await Task.Run(() => { ClusterHV(ref m_Bitmap); });
+            }
+            else
+            {
+                await Task.Run(() => { ClusterHV(ref m_Bitmap, true); });
+            }
             pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
             pictureBoxRight.BackColor = Color.Black;
             Console.WriteLine("Done");
@@ -326,6 +338,26 @@ namespace ImageConverter
                 {
                     img.SetPixel(x, y, c);
                 }
+            }
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            if(trackBar1.Value == 2)
+            {
+                labelSpace.Text = "RGB";
+            }
+            else if(trackBar1.Value == 1)
+            {
+                labelSpace.Text = "HSV";
+            }
+            else if (trackBar1.Value == 0)
+            {
+                labelSpace.Text = "HS";
+            }
+            else
+            {
+                labelSpace.Text = "ERR";
             }
         }
     }

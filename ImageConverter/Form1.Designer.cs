@@ -37,9 +37,13 @@ namespace ImageConverter
             this.pictureBoxRight = new System.Windows.Forms.PictureBox();
             this.pictureBoxLeft = new System.Windows.Forms.PictureBox();
             this.pictureBoxPalette = new System.Windows.Forms.PictureBox();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.label3 = new System.Windows.Forms.Label();
+            this.labelSpace = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // button_Open
@@ -58,7 +62,7 @@ namespace ImageConverter
             // 
             this.button_save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_save.ForeColor = System.Drawing.Color.Aquamarine;
-            this.button_save.Location = new System.Drawing.Point(1293, 506);
+            this.button_save.Location = new System.Drawing.Point(1308, 507);
             this.button_save.Name = "button_save";
             this.button_save.Size = new System.Drawing.Size(159, 44);
             this.button_save.TabIndex = 1;
@@ -82,7 +86,7 @@ namespace ImageConverter
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.MediumSpringGreen;
-            this.label2.Location = new System.Drawing.Point(784, 26);
+            this.label2.Location = new System.Drawing.Point(799, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(106, 13);
             this.label2.TabIndex = 7;
@@ -94,9 +98,9 @@ namespace ImageConverter
             this.button_Convert.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button_Convert.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Convert.ForeColor = System.Drawing.Color.Turquoise;
-            this.button_Convert.Location = new System.Drawing.Point(717, 250);
+            this.button_Convert.Location = new System.Drawing.Point(718, 254);
             this.button_Convert.Name = "button_Convert";
-            this.button_Convert.Size = new System.Drawing.Size(40, 38);
+            this.button_Convert.Size = new System.Drawing.Size(54, 53);
             this.button_Convert.TabIndex = 4;
             this.button_Convert.UseVisualStyleBackColor = true;
             this.button_Convert.Click += new System.EventHandler(this.button_Convert_Click);
@@ -106,7 +110,7 @@ namespace ImageConverter
             this.pictureBoxRight.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(75)))));
             this.pictureBoxRight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxRight.Image = global::ImageConverter.Properties.Resources.semi_tansparent_logo1;
-            this.pictureBoxRight.Location = new System.Drawing.Point(763, 11);
+            this.pictureBoxRight.Location = new System.Drawing.Point(778, 12);
             this.pictureBoxRight.Name = "pictureBoxRight";
             this.pictureBoxRight.Size = new System.Drawing.Size(700, 550);
             this.pictureBoxRight.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -129,18 +133,60 @@ namespace ImageConverter
             // pictureBoxPalette
             // 
             this.pictureBoxPalette.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.pictureBoxPalette.Location = new System.Drawing.Point(774, 508);
+            this.pictureBoxPalette.Location = new System.Drawing.Point(789, 509);
             this.pictureBoxPalette.Name = "pictureBoxPalette";
             this.pictureBoxPalette.Size = new System.Drawing.Size(512, 40);
             this.pictureBoxPalette.TabIndex = 8;
             this.pictureBoxPalette.TabStop = false;
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.LargeChange = 1;
+            this.trackBar1.Location = new System.Drawing.Point(723, 374);
+            this.trackBar1.Maximum = 2;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.trackBar1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.trackBar1.Size = new System.Drawing.Size(45, 72);
+            this.trackBar1.TabIndex = 9;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trackBar1.Value = 2;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.MediumSpringGreen;
+            this.label3.Location = new System.Drawing.Point(716, 343);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(60, 40);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Conversion Space";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // labelSpace
+            // 
+            this.labelSpace.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.labelSpace.AutoSize = true;
+            this.labelSpace.Font = new System.Drawing.Font("OCR A Extended", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSpace.ForeColor = System.Drawing.Color.MediumSpringGreen;
+            this.labelSpace.Location = new System.Drawing.Point(725, 461);
+            this.labelSpace.Name = "labelSpace";
+            this.labelSpace.Size = new System.Drawing.Size(38, 17);
+            this.labelSpace.TabIndex = 11;
+            this.labelSpace.Text = "RGB";
+            this.labelSpace.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(87)))));
-            this.ClientSize = new System.Drawing.Size(1473, 575);
+            this.ClientSize = new System.Drawing.Size(1490, 574);
+            this.Controls.Add(this.labelSpace);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.pictureBoxPalette);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -159,6 +205,7 @@ namespace ImageConverter
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,6 +221,9 @@ namespace ImageConverter
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBoxPalette;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label labelSpace;
     }
 }
 
