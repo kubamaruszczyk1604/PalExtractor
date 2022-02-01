@@ -22,7 +22,8 @@ namespace ImageConverter
             //button_Convert.Enabled = false;
         }
         Image m_Image = null;
-        BitmapRGB m_Bitmap;
+        BitmapRGB m_SourceBitmap;
+        BitmapRGB m_DestinationBitmap;
         FBuffer m_IntensityBuffer;
 
         private void button_Open_Click(object sender, EventArgs e)
@@ -34,8 +35,9 @@ namespace ImageConverter
             {
                 if (m_Image != null) m_Image.Dispose();
                 string s = sd.FileName;
-                m_Bitmap = BitmapRGB.FromFile(s, new Size(320,240));
-                m_Image = m_Bitmap.OriginalImage;
+                m_SourceBitmap = BitmapRGB.FromFile(s, new Size(320,240));
+                m_DestinationBitmap = BitmapRGB.FromFile(s, new Size(320, 240));
+                m_Image = m_SourceBitmap.OriginalImage;
 
                 pictureBoxLeft.BackColor = Color.Black;
                 pictureBoxLeft.Image = m_Image;
@@ -50,7 +52,7 @@ namespace ImageConverter
 
             var dialog = new ExportDialogForm();
             dialog.SetPaletteImage(pictureBoxPalette.Image);
-            dialog.SetChromaImage(Bitmap2Image(m_Bitmap));
+            dialog.SetChromaImage(Bitmap2Image(m_SourceBitmap));
             if(m_IntensityBuffer != null)
             {
                 dialog.SetLumaImage(Intensity2Image(m_IntensityBuffer));
@@ -87,7 +89,7 @@ namespace ImageConverter
 
 
 
-        public void ClusterHV(ref BitmapRGB scrBitmap, bool excludeSaturation = false)
+        public void ClusterHV(BitmapRGB scrBitmap, ref BitmapRGB destinationBitmap, bool excludeSaturation = false)
         {
             List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
 
@@ -119,7 +121,7 @@ namespace ImageConverter
             for (int i = 0; i < pixels.Count; ++i)
             {
                 float val = excludeSaturation ? 1.0f : (float)(pixels[i].Components[2]);
-                scrBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), val);
+                destinationBitmap.Pixels[i] = HSV2RGB((float)(pixels[i].Components[0] * 360d), (float)(pixels[i].Components[1]), val);
                 m_IntensityBuffer.SetField(i, (float)(pixels[i].Components[2]));
             }
         }
@@ -127,7 +129,7 @@ namespace ImageConverter
 
         List<PixelRGB> m_PaletteColors;
 
-        public void ClusterRGB(ref BitmapRGB scrBitmap)
+        public void ClusterRGB(BitmapRGB scrBitmap, ref BitmapRGB destinationBitmap)
         {
             List<PixelData> pixels = new List<PixelData>(scrBitmap.Width * scrBitmap.Height);
 
@@ -157,7 +159,7 @@ namespace ImageConverter
             m_IntensityBuffer = new FBuffer(scrBitmap.Width, scrBitmap.Height);
             for (int i = 0; i < pixels.Count; ++i)
             {
-                scrBitmap.Pixels[i] = new PixelRGB((byte)(pixels[i].Components[0] * 255d), (byte)(pixels[i].Components[1] * 255d),
+                destinationBitmap.Pixels[i] = new PixelRGB((byte)(pixels[i].Components[0] * 255d), (byte)(pixels[i].Components[1] * 255d),
                     (byte)(pixels[i].Components[2] * 255d));
 
                 RGB2HSV(ref scrBitmap.Pixels[i], out double h, out double s, out double v);
@@ -203,12 +205,12 @@ namespace ImageConverter
                     }
                 }
               
-                for(int y = 0; y < m_Bitmap.Height; ++y)
+                for(int y = 0; y < m_DestinationBitmap.Height; ++y)
                 {
                     string row = "";
-                    for(int x = 0; x< m_Bitmap.Width; ++x)
+                    for(int x = 0; x< m_DestinationBitmap.Width; ++x)
                     {
-                        row += map[m_Bitmap.GetPixel(x, y)].ToString() + ",";
+                        row += map[m_DestinationBitmap.GetPixel(x, y)].ToString() + ",";
                     }
                     row = row.Substring(0, row.Length - 1);
                     writer.WriteLine(row);
@@ -295,7 +297,7 @@ namespace ImageConverter
 
         private async void button_Convert_Click(object sender, EventArgs e)
         {
-            if (m_Bitmap == null)
+            if (m_SourceBitmap == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -306,22 +308,22 @@ namespace ImageConverter
             label2.Text = "Calculating... Please wait.";
             if (trackBar1.Value == 2)
             {
-                await Task.Run(() => { ClusterRGB(ref m_Bitmap); });
+                await Task.Run(() => { ClusterRGB(m_SourceBitmap, ref m_DestinationBitmap); });
             }
             else if(trackBar1.Value == 1)
             {
-                await Task.Run(() => { ClusterHV(ref m_Bitmap); });
+                await Task.Run(() => { ClusterHV(m_SourceBitmap, ref m_DestinationBitmap); });
             }
             else
             {
-                await Task.Run(() => { ClusterHV(ref m_Bitmap, true); });
+                await Task.Run(() => { ClusterHV(m_SourceBitmap, ref m_DestinationBitmap, true); });
             }
-            pictureBoxRight.Image = Bitmap2Image(m_Bitmap);
-            pictureBoxRight.BackColor = Color.Black;
+            pictureBoxRight.Image = Bitmap2Image(m_DestinationBitmap);
+            //pictureBoxRight.BackColor = Color.Black;
             Console.WriteLine("Done");
             button_Convert.Enabled = true;
             button_save.Enabled = true;
-            label2.Text = "Destination Resolution: " + m_Bitmap.Width.ToString() + " x " + m_Bitmap.Height.ToString();
+            label2.Text = "Destination Resolution: " + m_DestinationBitmap.Width.ToString() + " x " + m_DestinationBitmap.Height.ToString();
             DrawPalette();
         }
 
