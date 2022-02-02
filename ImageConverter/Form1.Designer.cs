@@ -40,10 +40,18 @@ namespace ImageConverter
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.label3 = new System.Windows.Forms.Label();
             this.labelSpace = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxReserved = new System.Windows.Forms.PictureBox();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.buttonRemoveReserved = new System.Windows.Forms.Button();
+            this.buttonAddReserved = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxReserved)).BeginInit();
             this.SuspendLayout();
             // 
             // button_Open
@@ -178,12 +186,70 @@ namespace ImageConverter
             this.labelSpace.Text = "RGB";
             this.labelSpace.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.TabIndex = 12;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBoxReserved
+            // 
+            this.pictureBoxReserved.Location = new System.Drawing.Point(724, 27);
+            this.pictureBoxReserved.Name = "pictureBoxReserved";
+            this.pictureBoxReserved.Size = new System.Drawing.Size(44, 166);
+            this.pictureBoxReserved.TabIndex = 13;
+            this.pictureBoxReserved.TabStop = false;
+            this.pictureBoxReserved.Click += new System.EventHandler(this.pictureBoxReserved_Click);
+            // 
+            // buttonRemoveReserved
+            // 
+            this.buttonRemoveReserved.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonRemoveReserved.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonRemoveReserved.Location = new System.Drawing.Point(745, 199);
+            this.buttonRemoveReserved.Name = "buttonRemoveReserved";
+            this.buttonRemoveReserved.Size = new System.Drawing.Size(23, 25);
+            this.buttonRemoveReserved.TabIndex = 14;
+            this.buttonRemoveReserved.Text = "-";
+            this.buttonRemoveReserved.UseVisualStyleBackColor = true;
+            this.buttonRemoveReserved.Click += new System.EventHandler(this.buttonRemoveReserved_Click);
+            // 
+            // buttonAddReserved
+            // 
+            this.buttonAddReserved.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.buttonAddReserved.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAddReserved.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonAddReserved.ForeColor = System.Drawing.Color.Lime;
+            this.buttonAddReserved.Location = new System.Drawing.Point(719, 199);
+            this.buttonAddReserved.Name = "buttonAddReserved";
+            this.buttonAddReserved.Size = new System.Drawing.Size(23, 25);
+            this.buttonAddReserved.TabIndex = 15;
+            this.buttonAddReserved.Text = "+";
+            this.buttonAddReserved.UseVisualStyleBackColor = true;
+            this.buttonAddReserved.Click += new System.EventHandler(this.buttonAddReserved_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.MediumSpringGreen;
+            this.label4.Location = new System.Drawing.Point(718, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(53, 13);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Reserved";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(87)))));
             this.ClientSize = new System.Drawing.Size(1490, 574);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.buttonAddReserved);
+            this.Controls.Add(this.buttonRemoveReserved);
+            this.Controls.Add(this.pictureBoxReserved);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.labelSpace);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.trackBar1);
@@ -195,9 +261,10 @@ namespace ImageConverter
             this.Controls.Add(this.button_Open);
             this.Controls.Add(this.pictureBoxRight);
             this.Controls.Add(this.pictureBoxLeft);
+            this.ForeColor = System.Drawing.Color.OrangeRed;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -206,6 +273,8 @@ namespace ImageConverter
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLeft)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxReserved)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,6 +293,12 @@ namespace ImageConverter
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label labelSpace;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBoxReserved;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Button buttonRemoveReserved;
+        private System.Windows.Forms.Button buttonAddReserved;
+        private System.Windows.Forms.Label label4;
     }
 }
 

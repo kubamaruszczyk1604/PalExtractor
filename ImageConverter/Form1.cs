@@ -21,6 +21,7 @@ namespace ImageConverter
             button_save.Enabled = false;
             m_ReservedColors = new List<PixelRGB>();
             m_ReservedColors.Add(new PixelRGB(0, 0, 0));
+            UpdateReservedUI();
             //button_Convert.Enabled = false;
         }
         Image m_Image = null;
@@ -30,8 +31,30 @@ namespace ImageConverter
 
         List<PixelRGB> m_ReservedColors;
 
+        void UpdateReservedUI()
+        {
+            if(pictureBoxReserved.Image != null)
+            {
+                pictureBoxReserved.Image.Dispose();
+            }
+            pictureBoxReserved.Image = new Bitmap(pictureBoxReserved.Width, pictureBoxReserved.Height);
+            for (int y = 0; y < pictureBoxReserved.Height;++y)
+            {
+                int i = (int) (((float)y / (float)pictureBoxReserved.Height)*m_ReservedColors.Count);
+
+                PixelRGB c = m_ReservedColors[i];
+                for (int x = 0; x < pictureBoxReserved.Width; ++x)
+                {
+
+                    ((Bitmap)pictureBoxReserved.Image).SetPixel(x, y, Color.FromArgb(c.R, c.G, c.B));
+                }
+              }
+
+        }
+
         private void button_Open_Click(object sender, EventArgs e)
         {
+
             OpenFileDialog sd = new OpenFileDialog();
             sd.RestoreDirectory = true;
             sd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
@@ -364,6 +387,33 @@ namespace ImageConverter
             else
             {
                 labelSpace.Text = "ERR";
+            }
+        }
+
+        private void pictureBoxReserved_Click(object sender, EventArgs e)
+        {
+           if( colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                m_ReservedColors.Add(new PixelRGB(colorDialog1.Color.R, colorDialog1.Color.G, colorDialog1.Color.B));
+                UpdateReservedUI();
+            }
+        }
+
+        private void buttonRemoveReserved_Click(object sender, EventArgs e)
+        {
+            if(m_ReservedColors.Count>1)
+            {
+                m_ReservedColors.Remove(m_ReservedColors[m_ReservedColors.Count - 1]);
+                UpdateReservedUI();
+            }
+        }
+
+        private void buttonAddReserved_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                m_ReservedColors.Add(new PixelRGB(colorDialog1.Color.R, colorDialog1.Color.G, colorDialog1.Color.B));
+                UpdateReservedUI();
             }
         }
     }
