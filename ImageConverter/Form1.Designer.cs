@@ -142,7 +142,7 @@ namespace ImageConverter
             // trackBar1
             // 
             this.trackBar1.LargeChange = 1;
-            this.trackBar1.Location = new System.Drawing.Point(723, 374);
+            this.trackBar1.Location = new System.Drawing.Point(723, 379);
             this.trackBar1.Maximum = 2;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Orientation = System.Windows.Forms.Orientation.Vertical;
@@ -158,7 +158,7 @@ namespace ImageConverter
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.MediumSpringGreen;
-            this.label3.Location = new System.Drawing.Point(716, 343);
+            this.label3.Location = new System.Drawing.Point(716, 348);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(60, 40);
             this.label3.TabIndex = 10;
@@ -171,7 +171,7 @@ namespace ImageConverter
             this.labelSpace.AutoSize = true;
             this.labelSpace.Font = new System.Drawing.Font("OCR A Extended", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelSpace.ForeColor = System.Drawing.Color.MediumSpringGreen;
-            this.labelSpace.Location = new System.Drawing.Point(725, 461);
+            this.labelSpace.Location = new System.Drawing.Point(725, 466);
             this.labelSpace.Name = "labelSpace";
             this.labelSpace.Size = new System.Drawing.Size(38, 17);
             this.labelSpace.TabIndex = 11;

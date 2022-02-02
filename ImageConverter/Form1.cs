@@ -19,12 +19,16 @@ namespace ImageConverter
         {
             InitializeComponent();
             button_save.Enabled = false;
+            m_ReservedColors = new List<PixelRGB>();
+            m_ReservedColors.Add(new PixelRGB(0, 0, 0));
             //button_Convert.Enabled = false;
         }
         Image m_Image = null;
         BitmapRGB m_SourceBitmap;
         BitmapRGB m_DestinationBitmap;
         FBuffer m_IntensityBuffer;
+
+        List<PixelRGB> m_ReservedColors;
 
         private void button_Open_Click(object sender, EventArgs e)
         {
@@ -52,7 +56,7 @@ namespace ImageConverter
 
             var dialog = new ExportDialogForm();
             dialog.SetPaletteImage(pictureBoxPalette.Image);
-            dialog.SetChromaImage(Bitmap2Image(m_SourceBitmap));
+            dialog.SetChromaImage(Bitmap2Image(m_DestinationBitmap));
             if(m_IntensityBuffer != null)
             {
                 dialog.SetLumaImage(Intensity2Image(m_IntensityBuffer));
@@ -103,8 +107,8 @@ namespace ImageConverter
             KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
             Cluster[] clusters = cl.Compute();
 
-            m_PaletteColors = new List<PixelRGB>(clusters.Length+1);
-            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
+            m_PaletteColors = new List<PixelRGB>(clusters.Length+m_ReservedColors.Count);
+            m_PaletteColors.AddRange(m_ReservedColors);
             for (int i = 0; i < clusters.Length; ++i)
             {
                 Cluster c = clusters[i];
@@ -144,8 +148,8 @@ namespace ImageConverter
 
             KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
             Cluster[] clusters = cl.Compute();
-            m_PaletteColors = new List<PixelRGB>(clusters.Length+1);
-            m_PaletteColors.Add(new PixelRGB(0, 0, 0));
+            m_PaletteColors = new List<PixelRGB>(clusters.Length+m_ReservedColors.Count);
+            m_PaletteColors.AddRange(m_ReservedColors);
             for (int i = 0; i < clusters.Length; ++i)
             {
                 Cluster c = clusters[i];
