@@ -127,7 +127,7 @@ namespace ImageConverter
             }
 
 
-            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16 - m_ReservedColors.Count);
             Cluster[] clusters = cl.Compute();
 
             m_PaletteColors = new List<PixelRGB>(clusters.Length+m_ReservedColors.Count);
@@ -169,7 +169,7 @@ namespace ImageConverter
             }
 
 
-            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 15);
+            KMeansClustering cl = new KMeansClustering(pixels.ToArray(), 16- m_ReservedColors.Count);
             Cluster[] clusters = cl.Compute();
             m_PaletteColors = new List<PixelRGB>(clusters.Length+m_ReservedColors.Count);
             m_PaletteColors.AddRange(m_ReservedColors);
