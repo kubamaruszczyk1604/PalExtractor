@@ -226,7 +226,13 @@ namespace ImageConverter
                     catch
                     {
                         PixelRGB p = m_PaletteColors[i];
-                        p.R -= 1;
+                        while(map.ContainsKey(p))
+                        {
+                            p.R -= 1;
+                            p.G -= 1;
+                            p.B -= 1;
+                        }
+
 
                         map.Add(p, i);
                     }
