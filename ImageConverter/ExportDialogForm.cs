@@ -20,6 +20,8 @@ namespace ImageConverter
         {
             InitializeComponent();
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (s_LastPath != "") path = s_LastPath;
+
             textBoxDirectory.Text = path + @"\"+textBoxName.Text;
             m_SaveDir = path;
             m_OldName = textBoxName.Text;
@@ -50,17 +52,20 @@ namespace ImageConverter
         public bool PaletteChecked { get { return checkBoxPalette.Checked; } }
 
 
-
+        private static string s_LastPath = "";
         private void textBoxDirectory_DoubleClick(object sender, EventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
             {
+                //fbd.RestoreDirectory = true;
+                fbd.SelectedPath = s_LastPath;
                 DialogResult result = fbd.ShowDialog();
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     textBoxDirectory.Text = fbd.SelectedPath + @"\" + textBoxName.Text;
                     m_SaveDir = fbd.SelectedPath;
+                    s_LastPath = m_SaveDir;
                 }
             }
         }
@@ -78,7 +83,7 @@ namespace ImageConverter
                 }
             }
             m_OldName = textBoxName.Text;
-           
+
             textBoxDirectory.Text = m_SaveDir + @"\" + textBoxName.Text; 
         }
 

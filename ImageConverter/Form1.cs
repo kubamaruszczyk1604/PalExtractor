@@ -62,8 +62,10 @@ namespace ImageConverter
             {
                 if (m_Image != null) m_Image.Dispose();
                 string s = sd.FileName;
-                m_SourceBitmap = BitmapRGB.FromFile(s, new Size(320,240));
-                m_DestinationBitmap = BitmapRGB.FromFile(s, new Size(320, 240));
+                //m_SourceBitmap = BitmapRGB.FromFile(s, new Size(320,240));
+                //m_DestinationBitmap = BitmapRGB.FromFile(s, new Size(320, 240));
+                m_SourceBitmap = BitmapRGB.FromFile(s, new Size(512, 512));
+                m_DestinationBitmap = BitmapRGB.FromFile(s, new Size(512, 512));
                 m_Image = m_SourceBitmap.OriginalImage;
 
                 pictureBoxLeft.BackColor = Color.Black;
